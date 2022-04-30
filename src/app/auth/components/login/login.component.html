@@ -1,0 +1,57 @@
+<div class="main container-fluid">
+  <main class="form-login">
+    <form [formGroup]="loginForm" *ngIf="loginForm" (ngSubmit)="onSubmit()">
+      <h1>Arianna</h1>
+      <h1 class="h3 fw-normal">Please login</h1>
+      <div class="form-floating">
+        <input
+          type="email"
+          class="form-control"
+          id="login-email"
+          formControlName="email"
+          [class.is-invalid]="
+            submitted && this.loginForm.controls['email'].invalid
+          "
+          required
+        />
+        <label for="login-email">Email</label>
+      </div>
+      <div class="form-floating">
+        <input
+          type="password"
+          class="form-control"
+          id="login-password"
+          formControlName="password"
+          [class.is-invalid]="
+            submitted && this.loginForm.controls['password'].invalid
+          "
+          required
+        />
+        <label for="login-password">Password</label>
+      </div>
+      <div
+        *ngIf="message"
+        class="alert alert-danger alert-dismissible fade show text-start"
+        role="alert"
+      >
+        <p class="mb-0">{{ message }}</p>
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="message = ''"
+        ></button>
+      </div>
+      <div class="d-grid gap-3">
+        <button type="submit" class="btn btn-primary btn-lg">
+          <span
+            *ngIf="loading"
+            class="spinner-border spinner-border-sm mr-1"
+          ></span
+          >Login
+        </button>
+        <button type="button" class="btn btn-link">Forgot password?</button>
+      </div>
+    </form>
+  </main>
+</div>
