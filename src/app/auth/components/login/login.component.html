@@ -43,7 +43,11 @@
         ></button>
       </div>
       <div class="d-grid gap-3">
-        <button type="submit" class="btn btn-primary btn-lg">
+        <button
+          type="submit"
+          class="btn btn-primary btn-lg"
+          [disabled]="loading"
+        >
           <span
             *ngIf="loading"
             class="spinner-border spinner-border-sm mr-1"

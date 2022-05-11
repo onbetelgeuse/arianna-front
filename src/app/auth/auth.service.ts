@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ReplaySubject, tap } from 'rxjs';
+import { BehaviorSubject, map, Observable, ReplaySubject, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AccessTokenWithUserDto } from '../shared/dto/access-token.dto';
 import { UserDto } from '../shared/dto/user.dto';
@@ -11,13 +11,24 @@ import { LocalStorageService } from '../shared/services/local-storage.service';
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly currentUser$: ReplaySubject<UserDto | null> =
-    new ReplaySubject();
+  private readonly currentUser$: BehaviorSubject<UserDto | null>;
   constructor(
     private readonly http: HttpClient,
     private readonly storageService: LocalStorageService,
     private dateService: DateService
-  ) {}
+  ) {
+    const user: UserDto | null = this.getUser();
+    this.currentUser$ = new BehaviorSubject(user);
+  }
+
+  public get currentUser(): Observable<UserDto | null> {
+    return this.currentUser$.asObservable();
+  }
+
+  public get isLoggedIn(): boolean {
+    const user: UserDto | null = this.getUser();
+    return user !== null;
+  }
 
   public login(email: string, password: string) {
     return this.http
@@ -34,6 +45,28 @@ export class AuthService {
           this.currentUser$.next(res.user);
         })
       );
+  }
+
+  public refreshToken(): Observable<AccessTokenWithUserDto> {
+    return this.http
+      .post<AccessTokenWithUserDto>(environment.api.auth + '/refresh', {})
+      .pipe(
+        tap((res: AccessTokenWithUserDto) => {
+          this.setExpiry(res.expiresIn);
+          this.setAuthToken(res.accessToken);
+          this.setRefreshToken(res.refreshToken);
+          this.setUser(res.user);
+          this.currentUser$.next(res.user);
+        })
+      );
+  }
+
+  public isInRole(...roles: string[]): Observable<boolean> {
+    return this.currentUser$.pipe(
+      map((user: UserDto | null) =>
+        user!.roles.some((role: string) => roles?.includes(role))
+      )
+    );
   }
 
   public getAuthToken(): string | null {

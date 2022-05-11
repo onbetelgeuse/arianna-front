@@ -14,6 +14,7 @@ export const environment = {
   AUTH_TOKEN: '_nna',
   EXPIRY_DATE: 'exp',
   REFRESH_TOKEN: 'rfh',
+  TOKEN_TYPE: 'Bearer',
   USER: '_ud',
   api: {
     auth: 'api/auth',
