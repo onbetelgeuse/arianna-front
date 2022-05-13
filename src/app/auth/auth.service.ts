@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable, ReplaySubject, tap } from 'rxjs';
+import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AccessTokenWithUserDto } from '../shared/dto/access-token.dto';
 import { UserDto } from '../shared/dto/user.dto';
 import { DateService } from '../shared/services/date.service';
 import { LocalStorageService } from '../shared/services/local-storage.service';
+import { NavigationService } from '../shared/services/navigation.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +16,8 @@ export class AuthService {
   constructor(
     private readonly http: HttpClient,
     private readonly storageService: LocalStorageService,
-    private dateService: DateService
+    private readonly dateService: DateService,
+    private readonly navigationService: NavigationService
   ) {
     const user: UserDto | null = this.getUser();
     this.currentUser$ = new BehaviorSubject(user);
@@ -99,6 +101,12 @@ export class AuthService {
     if (refreshToken) {
       this.storageService.set(environment.REFRESH_TOKEN, refreshToken);
     }
+  }
+
+  public externalLogin(): void {
+    this.navigationService.navigateByUrl(
+      environment.api.auth + '/external/login'
+    );
   }
 
   private removeAuthToken(): void {

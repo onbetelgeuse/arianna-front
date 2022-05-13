@@ -62,6 +62,10 @@ export class LoginComponent extends BaseComponent implements OnInit {
     }
   }
 
+  public onExternalLogin(): void {
+    this.authService.externalLogin();
+  }
+
   private handleError(err: any): void {
     switch (err.status) {
       case 400:
