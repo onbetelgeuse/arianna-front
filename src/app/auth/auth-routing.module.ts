@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { FailureRedirectComponent } from './components/callback/failure-redirect/failure-redirect.component';
-import { SuccessRedirectComponent } from './components/callback/success-redirect/success-redirect.component';
+import { FailureRedirectComponent } from './components/callback/failed/failure-redirect.component';
+import { SuccessRedirectComponent } from './components/callback/success/success-redirect.component';
 import { LoginComponent } from './components/login/login.component';
 
 const routes: Routes = [
